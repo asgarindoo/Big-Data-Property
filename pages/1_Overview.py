@@ -4,15 +4,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import time
 import locale
+from dataProcessing import process_data
 
 # Caching data to improve performance
-@st.cache_data
+@st.cache
 def load_data():
     try:
-        # Load your property data here
-        # Replace 'path_to_your_csv_file' with the actual path to your CSV file
-        property_data = pd.read_csv("E:\\jabodetabek_house_price.csv")
-        return property_data
+        # Memuat dan membersihkan data dari dataProcessing.py
+        cleaned_data = process_data()
+
+        # Convert DataFrame Spark menjadi DataFrame Pandas
+        cleaned_data_pandas = cleaned_data.toPandas()
+
+        return cleaned_data_pandas
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return None
@@ -33,12 +37,12 @@ property_data = load_data()
 if property_data is not None:
     # Display group members in the sidebar
     group_members = {
-    "Anggota Kelompok": [
-        "Asgarindo Dwiki I.A.",
-        "Aldien Maulana",
-        "Aurelia Catherine L",
-        "Monicha Ailsa Neha U",
-     ]
+        "Anggota Kelompok": [
+            "Asgarindo Dwiki I.A.",
+            "Aldien Maulana",
+            "Aurelia Catherine L",
+            "Monicha Ailsa Neha U",
+         ]
     }
 
     st.sidebar.json(group_members)
@@ -82,14 +86,13 @@ if property_data is not None:
     # Filter by price range
     if 'price_in_rp' in property_data.columns:
         min_price = int(property_data['price_in_rp'].min())
-        max_price = int(property_data['price_in_rp'].max())
+        max_price = int(property_data['price_in_rp'].min())
         min_price_idr = locale.format_string("%d", min_price, grouping=True)
         max_price_idr = locale.format_string("%d", max_price, grouping=True)
-        selected_price = st.slider("Select Price Range (IDR)", min_price, max_price, (min_price, max_price), format="IDR %d")
+        selected_price = st.slider("Select Price Range (IDR)", min_price, max_price, (min_price, max_price), format="%d")
     else:
         st.error("'price_in_rp' column not found in data.")
         selected_price = (0, 0)
-
 
     # Apply filters to data
     filtered_data = property_data

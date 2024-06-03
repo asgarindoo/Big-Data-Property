@@ -1,16 +1,22 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import time
+from dataProcessing import process_data
 
 # Load property data
 @st.cache_data
 def load_data():
-    # Load your property data here
-    # Replace 'path_to_your_csv_file' with the actual path to your CSV file
-    property_data = pd.read_csv("E:\\jabodetabek_house_price.csv")
-    return property_data
+    try:
+        # Load and clean data from dataProcessing.py
+        cleaned_data = process_data()
+
+        # Convert Spark DataFrame to Pandas DataFrame
+        cleaned_data_pandas = cleaned_data.toPandas()
+
+        return cleaned_data_pandas
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return None
 
 # Set page configuration
 st.set_page_config(layout="wide",
@@ -31,14 +37,6 @@ group_members = {
 
 st.sidebar.json(group_members)
 st.sidebar.info("Team Members Loaded")
-
-    # Sidebar for data loading status
-with st.sidebar:
-        with st.spinner("Searching Location..."):
-            time.sleep(2)
-
-
-st.sidebar.success("Location loaded successfully!")
 
 # Display location map
 st.subheader('Property Locations')

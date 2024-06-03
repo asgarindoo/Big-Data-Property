@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import time
+from dataProcessing import process_data
 
 # Setting page configuration
 st.set_page_config(
@@ -14,9 +15,18 @@ st.set_page_config(
 
 @st.cache_data
 def load_data():
-    url = "E:\\jabodetabek_house_price.csv"  # Ganti dengan URL file CSV Anda
-    data = pd.read_csv(url)  # Ganti dengan nama file CSV Anda
-    return data
+    try:
+        # Memuat dan membersihkan data dari dataProcessing.py
+        cleaned_data = process_data()
+
+        # Convert DataFrame Spark menjadi DataFrame Pandas
+        cleaned_data_pandas = cleaned_data.toPandas()
+
+        return cleaned_data_pandas
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return None
+
 
 property_data = load_data()
 

@@ -19,9 +19,11 @@ def load_data():
         return None
 
 # Set page configuration
-st.set_page_config(layout="wide",
+st.set_page_config(
+    layout="wide",
     page_title="Property Dashboard",
-    initial_sidebar_state="expanded")
+    initial_sidebar_state="expanded"
+)
 
 # Load property data
 property_data = load_data()
@@ -40,9 +42,17 @@ st.sidebar.info("Team Members Loaded")
 
 # Display location map
 st.subheader('Property Locations')
-if 'lat' in property_data.columns and 'long' in property_data.columns:
-    # Rename 'long' column to 'lon' for Streamlit compatibility
-    map_data = property_data.rename(columns={'long': 'lon'})[['lat', 'lon']].dropna()
-    st.map(map_data)
+if property_data is not None:
+    if 'lat' in property_data.columns and 'long' in property_data.columns:
+        # Rename 'long' column to 'lon' for Streamlit compatibility
+        map_data = property_data.rename(columns={'long': 'lon'})[['lat', 'lon']].dropna()
+
+        # Convert 'lat' and 'lon' columns to float
+        map_data['lat'] = map_data['lat'].astype(float)
+        map_data['lon'] = map_data['lon'].astype(float)
+
+        st.map(map_data)
+    else:
+        st.write("Latitude or Longitude columns not found in the dataset.")
 else:
-    st.write("Latitude or Longitude columns not found in the dataset.")
+    st.error("Failed to load data. Please check the file path and try again.")

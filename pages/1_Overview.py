@@ -7,13 +7,13 @@ import locale
 from dataProcessing import process_data
 
 # Caching data to improve performance
-@st.cache
+@st.cache_data
 def load_data():
     try:
-        # Memuat dan membersihkan data dari dataProcessing.py
+        # Load and clean data from dataProcessing.py
         cleaned_data = process_data()
 
-        # Convert DataFrame Spark menjadi DataFrame Pandas
+        # Convert Spark DataFrame to Pandas DataFrame
         cleaned_data_pandas = cleaned_data.toPandas()
 
         return cleaned_data_pandas
@@ -42,7 +42,7 @@ if property_data is not None:
             "Aldien Maulana",
             "Aurelia Catherine L",
             "Monicha Ailsa Neha U",
-         ]
+        ]
     }
 
     st.sidebar.json(group_members)
@@ -85,11 +85,16 @@ if property_data is not None:
 
     # Filter by price range
     if 'price_in_rp' in property_data.columns:
-        min_price = int(property_data['price_in_rp'].min())
-        max_price = int(property_data['price_in_rp'].min())
+        min_price = 0  # Set minimum price to 0
+        max_price = int(property_data['price_in_rp'].max())
         min_price_idr = locale.format_string("%d", min_price, grouping=True)
         max_price_idr = locale.format_string("%d", max_price, grouping=True)
-        selected_price = st.slider("Select Price Range (IDR)", min_price, max_price, (min_price, max_price), format="%d")
+
+        if min_price != max_price:
+            selected_price = st.slider("Select Price Range (IDR)", min_price, max_price, (min_price, max_price), format="%d")
+        else:
+            st.info(f"Only one price available: {min_price_idr} IDR")
+            selected_price = (min_price, max_price)
     else:
         st.error("'price_in_rp' column not found in data.")
         selected_price = (0, 0)

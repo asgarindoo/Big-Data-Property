@@ -24,25 +24,26 @@ group_members = {
     "Anggota Kelompok": [
         "Asgarindo Dwiki I.A.",
         "Aldien Maulana",
-        "Hafidz Fathurrohman",
-        "Muhammad Fikri",
+        "Aurelia Catherine L",
+        "Monicha Ailsa Neha U",
     ]
 }
 
 st.sidebar.json(group_members)
+st.sidebar.info("Team Members Loaded")
 st.title("Jabodetabek Property Dashboard")
 st.subheader("Welcome to the Big Data Property Dashboard!")
 st.write("")
 st.write("")
 
 
-with st.sidebar.status("Downloading data..."):
-    st.write("Searching for data...")
-    time.sleep(2)
-    st.write("Found URL.")
-    time.sleep(1)
-    st.write("Downloading data...")
-    time.sleep(1)
+with st.sidebar:
+        with st.spinner("Searching for data..."):
+            time.sleep(2)
+            st.write("Found URL.")
+            time.sleep(1)
+            st.write("Downloading data...")
+            time.sleep(1)
 
 st.sidebar.success("Data loaded successfully!")
 

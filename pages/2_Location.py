@@ -24,19 +24,21 @@ group_members = {
     "Anggota Kelompok": [
         "Asgarindo Dwiki I.A.",
         "Aldien Maulana",
-        "Hafidz Fathurrohman",
-        "Muhammad Fikri",
+        "Aurelia Catherine L",
+        "Monicha Ailsa Neha U",
     ]
 }
 
 st.sidebar.json(group_members)
-with st.sidebar.status("Downloading data..."):
-    st.write("Searching Location...")
-    time.sleep(2)
-    st.write("Found Location.")
-    time.sleep(1)
+st.sidebar.info("Team Members Loaded")
 
-st.sidebar.success("Data loaded successfully!")
+    # Sidebar for data loading status
+with st.sidebar:
+        with st.spinner("Searching Location..."):
+            time.sleep(2)
+
+
+st.sidebar.success("Location loaded successfully!")
 
 # Display location map
 st.subheader('Property Locations')
